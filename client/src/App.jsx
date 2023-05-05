@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home";
 import UpdatePage from "./pages/UpdatePage";
 import RestaurantDetailPage from "./pages/RestaurantDetailPage";
+import { RestaurantsContextProvider } from "./context/RestaurantsContext";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -17,9 +18,11 @@ const App = () => {
     },
   ]);
   return (
-    <div>
-      <RouterProvider router={router} />
-    </div>
+    <RestaurantsContextProvider>
+      <div className="container">
+        <RouterProvider router={router} />
+      </div>
+    </RestaurantsContextProvider>
   );
 };
 
