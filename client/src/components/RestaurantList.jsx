@@ -1,9 +1,12 @@
 import React, { useContext, useEffect } from "react";
-import newRequest from "../utils/newRequest";
 import { RestaurantsContext } from "../context/RestaurantsContext";
+import { useNavigate } from "react-router-dom";
+import newRequest from "../utils/newRequest";
 
 const RestaurantList = (props) => {
   const { restaurants, setRestaurants } = useContext(RestaurantsContext);
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -15,6 +18,27 @@ const RestaurantList = (props) => {
 
     fetchData();
   }, []);
+
+  const handleDelete = async (e, id) => {
+    e.stopPropagation();
+    try {
+      const response = await newRequest.delete(`/${id}`);
+      console.log(response);
+      setRestaurants(
+        restaurants.filter((restaurant) => {
+          return restaurant.id !== id;
+        })
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleUpdate = (e, id) => {
+    e.stopPropagation();
+    navigate(`/restaurants/${id}/update`);
+  };
+
   return (
     <div className="list-group">
       <table className="table table-hover table-dark">
@@ -38,10 +62,20 @@ const RestaurantList = (props) => {
                   <td>{"$".repeat(restaurant.price_range)}</td>
                   <td>reviews</td>
                   <td>
-                    <button className="btn btn-warning">Update</button>
+                    <button
+                      onClick={(e) => handleUpdate(e, restaurant.id)}
+                      className="btn btn-warning"
+                    >
+                      Update
+                    </button>
                   </td>
                   <td>
-                    <button className="btn btn-danger">Delete</button>
+                    <button
+                      onClick={(e) => handleDelete(e, restaurant.id)}
+                      className="btn btn-danger"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               );
