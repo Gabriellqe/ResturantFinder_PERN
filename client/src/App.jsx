@@ -1,6 +1,5 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
 import Home from "./pages/Home";
 import UpdatePage from "./pages/UpdatePage";
 import RestaurantDetailPage from "./pages/RestaurantDetailPage";
