@@ -6,7 +6,7 @@ const db = require("./db/index.js");
 const restaurantsRoutes = require("./routes/restaurants.routes");
 require("dotenv").config();
 
-app.use(cors());
+app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
 app.use(morgan("dev"));
 app.use("/api/v1/restaurants", restaurantsRoutes);

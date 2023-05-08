@@ -29,16 +29,6 @@ const RestaurantDetailPage = () => {
     <div>
       {selectedRestaurant && (
         <>
-          <div className="mt-s">
-            <Reviews />
-          </div>
-          <AddReview />
-        </>
-      )}
-    </div>
-    /*     <div>
-      {selectedRestaurant && (
-        <>
           <h1 className="text-center display-1">
             {selectedRestaurant.restaurant.name}
           </h1>
@@ -56,7 +46,7 @@ const RestaurantDetailPage = () => {
           <AddReview />
         </>
       )}
-    </div> */
+    </div>
   );
 };
 

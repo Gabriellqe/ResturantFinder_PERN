@@ -2,7 +2,9 @@ const db = require("../db");
 
 const getAllRestaurants = async (req, res) => {
   try {
-    const restaurants = await db.query("select * from restaurants");
+    const restaurants = await db.query(
+      "select * from restaurants left join (select restaurants_id, COUNT(*), TRUNC(AVG(rating),1) as average_rating from reviews group by restaurants_id) reviews on restaurants.id = reviews.restaurants_id;"
+    );
     res.status(200).json({
       status: "success",
       results: restaurants.rows.length,
@@ -19,13 +21,20 @@ const getSingleRestaurant = async (req, res) => {
   const { id } = req.params;
   try {
     const restaurant = await db.query(
-      "select * from restaurants where id = $1",
+      "select * from restaurants left join (select restaurants_id, COUNT(*), TRUNC(AVG(rating),1) as average_rating from reviews group by restaurants_id) reviews on restaurants.id = reviews.restaurants_id where id = $1",
       [id]
     );
+
+    const reviews = await db.query(
+      "select * from reviews where restaurants_id = $1",
+      [id]
+    );
+
     res.status(200).json({
       status: "succes",
       data: {
         restaurant: restaurant.rows[0],
+        reviews: reviews.rows,
       },
     });
   } catch (error) {
@@ -83,10 +92,30 @@ const deleteRestaurant = async (req, res) => {
   }
 };
 
+const addReview = async (req, res) => {
+  const { id } = req.params;
+  const { name, review, rating } = req.body;
+  try {
+    const newReview = await db.query(
+      "INSERT INTO reviews (restaurants_id, name, review, rating) values ($1, $2, $3, $4) returning *;",
+      [id, name, review, rating]
+    );
+    res.status(201).json({
+      status: "success",
+      data: {
+        review: newReview.rows[0],
+      },
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 module.exports = {
   getAllRestaurants,
   getSingleRestaurant,
   createRestaurant,
   updateRestaurant,
   deleteRestaurant,
+  addReview,
 };
